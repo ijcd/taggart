@@ -28,3 +28,12 @@ use Mix.Config
 # here (which is why it is important to import them last).
 #
 #     import_config "#{Mix.env}.exs"
+
+if Mix.env == :dev do
+  config :mix_test_watch,
+    tasks: [
+      "test",
+      # "dialyzer",
+      # "credo",
+    ]
+end
