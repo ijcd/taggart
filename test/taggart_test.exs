@@ -1,8 +1,8 @@
 defmodule TaggartTest do
-  # use ExUnit.Case
+  import Phoenix.HTML
+
   use Taggart.ConnCase
   use Taggart
-  import Phoenix.HTML
 
   doctest Taggart
 
@@ -38,7 +38,7 @@ defmodule TaggartTest do
 
     assert "<div do=\"do_arg\" id=\"bar\">content</div>" == div("content", do: "do_arg", id: "bar") |> safe_to_string
     assert "<span do=\"do_arg\" id=\"bar\">content</span>" == span("content", do: "do_arg", id: "bar") |> safe_to_string
-  end 
+  end
 
   test "with do: nil" do
     assert "<div></div>" == (div do: nil) |> safe_to_string()
@@ -101,14 +101,14 @@ defmodule TaggartTest do
     assert "<div><span></span><div></div></div>" == (div do span do end ; div do end end) |> safe_to_string
   end
 
-  test "non-string content" do  
-    assert "<span>5</span>" == span(5) |> safe_to_string                                                  
+  test "non-string content" do
+    assert "<span>5</span>" == span(5) |> safe_to_string
     assert "<span>foo</span>" == span(:foo) |> safe_to_string
-    assert "<span>5</span>" == span(do: 5) |> safe_to_string                                                  
+    assert "<span>5</span>" == span(do: 5) |> safe_to_string
     assert "<span>foo</span>" == span(do: :foo) |> safe_to_string
-    assert "<span>5</span>" == (span() do 5 end) |> safe_to_string                                                  
+    assert "<span>5</span>" == (span() do 5 end) |> safe_to_string
     assert "<span>foo</span>" == (span() do :foo end) |> safe_to_string
-  end  
+  end
 
   test "normal html" do
     name = "Vincent"
@@ -143,7 +143,7 @@ defmodule TaggartTest do
         end
         submit("Submit")
       end
-    end) 
+    end)
     |> safe_to_string
 
     assert "<form accept-charset=\"UTF-8\" action=\"/users\" method=\"post\"><input name=\"_csrf_token\" type=\"hidden\"" <> _ = form
