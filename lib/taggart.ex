@@ -11,7 +11,7 @@ defmodule Taggart do
   `Kernel.div(20, 2)`
   """
 
-  alias Phoenix.HTML.Tag
+  import Taggart.Tags, only: [deftag: 1]
 
   @external_resource tags_path = Path.join([__DIR__, "tags.txt"])
 
@@ -21,85 +21,67 @@ defmodule Taggart do
 
   @doc false
   defmacro __using__(opts) do
+    should_deconflict_imports = Keyword.get(opts, :deconflict_imports, true)
     tags = Keyword.get(opts, :tags, @tags)
-    ambiguous_imports = __taggart_find_ambiguous_imports(tags)
+    ambiguous_imports = find_ambiguous_imports(tags)
+
+    import_ast =
+      if should_deconflict_imports do
+        quote do
+          defmacro __using__(opts) do
+            ambiguous_imports = unquote(ambiguous_imports)
+            module = __MODULE__
+            quote do
+              import Kernel, except: unquote(ambiguous_imports)
+              import unquote(module)
+            end
+          end
+
+          import Kernel, except: unquote(ambiguous_imports)
+          import Taggart, only: [taggart: 0, taggart: 1]
+        end
+      else
+        quote do
+          defmacro __using__(opts) do
+            module = __MODULE__
+            quote do
+              import unquote(module)
+              import Taggart, only: [taggart: 0, taggart: 1]
+            end
+          end
+
+          import Taggart, only: [taggart: 0, taggart: 1]
+        end
+      end
+
+    tags_ast =
+      quote location: :keep, bind_quoted: [
+        tags: tags
+      ] do
+        for tag <- tags do
+          deftag unquote(tag)
+        end
+      end
 
     quote do
-      import Kernel, except: unquote(ambiguous_imports)
-      import unquote(__MODULE__)
+      unquote(import_ast)
+      unquote(tags_ast)
     end
   end
 
+  defmacro taggart(), do: {:safe, []}
   defmacro taggart(do: content) do
     content = case content do
       {:__block__, _, inner} -> inner
       _ -> content
     end
 
-    quote bind_quoted: [content: content] do
+    quote location: :keep, bind_quoted: [content: content] do
       content
     end
   end
 
-  for tag <- @tags do    
-    defmacro unquote(tag)(content_or_attrs \\ [])
-
-    @doc """
-    Make a #{tag} tag.
-
-      ## Examples
-
-          iex> Taggart.#{tag}() |> Phoenix.HTML.safe_to_string()
-          "<#{tag}></#{tag}>"
-
-          iex> Taggart.#{tag}("content") |> Phoenix.HTML.safe_to_string()
-          "<#{tag}>content</#{tag}>"
-
-          iex> Taggart.#{tag}("content", class: "foo") |> Phoenix.HTML.safe_to_string()
-          "<#{tag} class=\\"foo\\">content</#{tag}>"
-
-          iex> Taggart.#{tag}() do end |> Phoenix.HTML.safe_to_string()
-          "<#{tag}></#{tag}>"
-
-          iex> Taggart.#{tag}() do "content" end |> Phoenix.HTML.safe_to_string()
-          "<#{tag}>content</#{tag}>"
-
-    """
-    defmacro unquote(tag)(attrs) when is_list(attrs) do
-      tag = unquote(tag)
-      {content, attrs} = Keyword.pop(attrs, :do, "")
-      content = case content do
-        {:__block__, _, inner} -> inner
-        _ -> content
-      end     
-
-      quote bind_quoted: [tag: tag, content: content, attrs: attrs] do
-        Tag.content_tag(tag, content, attrs)
-      end
-    end
-
-    defmacro unquote(tag)(content) do
-      tag = unquote(tag)
-
-      quote bind_quoted: [tag: tag, content: content] do
-        Tag.content_tag(tag, content, [])
-      end
-    end
-
-    defmacro unquote(tag)(content, attrs) when is_list(attrs) do
-      tag = unquote(tag)
-      content = case content do
-        {:__block__, _, inner} -> inner
-        _ -> content
-      end     
-
-      quote bind_quoted: [tag: tag, content: content, attrs: attrs] do
-        Tag.content_tag(tag, content, attrs)
-      end
-    end
-  end
-  
-  defp __taggart_find_ambiguous_imports(tags) do
+  defp find_ambiguous_imports(tags) do
     default_imports = Kernel.__info__(:functions) ++ Kernel.__info__(:macros)
     for { name, arity } <- default_imports, arity in 0..2 and name in tags do
       { name, arity }

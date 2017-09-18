@@ -110,6 +110,10 @@ defmodule TaggartTest do
     assert "<span>foo</span>" == (span() do :foo end) |> safe_to_string
   end
 
+  test "empty taggart" do
+    assert "" == taggart() |> safe_to_string
+  end
+
   test "normal html" do
     name = "Vincent"
 

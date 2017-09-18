@@ -33,6 +33,7 @@ defmodule Taggart.Mixfile do
       {:credo, "~> 0.8.5", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
       {:stream_data, "~> 0.2.0", only: [:dev, :test], runtime: false},
+      {:mex, "~> 0.0.5", only: [:dev, :test], runtime: false},
     ]
   end
 end
