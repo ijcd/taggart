@@ -114,7 +114,7 @@ defmodule TaggartTest do
   test "with more deeply nested do blocks with attrs" do
     assert "<div class=\"foo\"><div class=\"bar\"><div class=\"baz\"></div></div></div>" == (div(class: "foo") do div(class: "bar") do div(class: "baz") do end end end) |> safe_to_string
     assert "<span class=\"foo\"><span class=\"bar\"><span class=\"baz\"></span></span></span>" == (span(class: "foo") do span(class: "bar") do span(class: "baz") do end end end) |> safe_to_string
-    assert "<div class=\"foo\"><span class=\"bar\"><div class=\"baz\"><span class=\"bang\"></span></div></span></div>" == (div(class: "foo") do span(class: "bar") do div(class: "baz") do span(class: "bang") do end end end end) |> safe_to_string    
+    assert "<div class=\"foo\"><span class=\"bar\"><div class=\"baz\"><span class=\"bang\"></span></div></span></div>" == (div(class: "foo") do span(class: "bar") do div(class: "baz") do span(class: "bang") do end end end end) |> safe_to_string
   end
 
   test "with siblings blocks with attrs" do
@@ -151,6 +151,20 @@ defmodule TaggartTest do
     |> safe_to_string
 
     assert "<html><body><div><h3>Person</h3><p class=\"name\">Vincent</p><p class=\"age\">38</p></div></body></html>" == html
+  end
+
+  test "works with functions and looping" do
+    times = [1, 2, 3, 4]
+
+    my_label = fn (i) -> label(i) end
+
+    h =
+      html do
+        for x <- times, do: my_label.(x)
+      end
+      |> safe_to_string
+
+    assert "<html><label>1</label><label>2</label><label>3</label><label>4</label></html>" = h
   end
 
   test "inside a phoenix form", %{conn: conn} do
