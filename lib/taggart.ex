@@ -62,6 +62,35 @@ defmodule Taggart do
     end
   end
 
+  @doc """
+  Wrap tags in a NOOP. Useful for the do block of Phoenix's
+  form_for(), as only the last value of the passed-in-function is
+  returned as form content.
+
+  ```
+    form_for(conn, "/users", [as: :user], fn f ->
+      taggart do
+        label do
+          "Name:"
+          text_input(f, :name)
+        end
+        label do
+          "Age:"
+          select(f, :age, 18..100)
+        end
+      end
+    end
+  ```
+
+    ## Examples
+
+        iex> taggart() |> Phoenix.HTML.safe_to_string()
+        ""
+
+        iex> (taggart do div() ; span() end) |> Phoenix.HTML.safe_to_string()
+        "<div></div><span></span>"
+
+  """
   defmacro taggart(), do: {:safe, []}
   defmacro taggart(do: content) do
     content = case content do
@@ -69,8 +98,20 @@ defmodule Taggart do
       _ -> content
     end
 
-    quote location: :keep, bind_quoted: [content: content] do
-      content
+    quote do
+      content = unquote(content)
+      case content do
+        {:safe, _} = c -> c
+
+        # monadically combine array of [{:safe, content}, ...] -> {:safe, [content, ...]}
+        clist when is_list(clist) ->
+          inners =
+            for c <- clist do
+              {:safe, inner} = c
+              inner
+            end
+          {:safe, [inners]}
+      end
     end
   end
 
