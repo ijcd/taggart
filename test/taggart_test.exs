@@ -140,6 +140,11 @@ defmodule TaggartTest do
     assert "<div></div>" == (taggart do div() end) |> safe_to_string
   end
 
+  test "taggart with string content" do
+    a = ""
+    assert a == (taggart do ; end) |> safe_to_string
+  end
+
   test "taggart with sibling content" do
     assert "<div></div><span></span>" == (taggart do div() ; span() end) |> safe_to_string
   end

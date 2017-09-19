@@ -26,9 +26,11 @@ end
 ## Usage
 
 Taggart produce Phoenix-compatible "safe" html through underlying usage of the
-[`content_tag/2`](https://hexdocs.pm/phoenix_html/Phoenix.HTML.Tag.html#content_tag/2)
-from Phoenix.HTML. Since it just produces IO Lists, it should remain
-compatible with any other library that uses the same format.
+[`Phoenix.HTML.content_tag/2`](https://hexdocs.pm/phoenix_html/Phoenix.HTML.Tag.html#content_tag/2).
+Since it just produces IO Lists, it should remain compatible with any
+other library that uses the same format.
+
+### Syntaxes
 
 Taggart supports a number of different syntaxes:
 
@@ -44,10 +46,14 @@ div(class: "bold", do: "Name")
 div do
 end
 
+div(class: "bold", do: "Name")
+
 div(class: "bold") do
   "Name"
 end
 ```
+
+### Nesting
 
 You can nest and combine in expected ways:
 
@@ -71,19 +77,10 @@ html do
 end
 ```
 
-If you want an IO List without creating a top-level wrapping tag (useful for Phoenix forms):
+### Embedding in Phoenix Forms
 
-```
-use Taggart
-
-taggart do
-  div()
-  span()
-  div()
-end
-```
-
-You can embed Taggart inside Phoenix helpers:
+You can embed Taggart inside Phoenix helpers using `Taggart.taggart/1`
+to create IO List without creating a top-level wrapping tag.
 
 ```
 use Taggart
@@ -101,7 +98,7 @@ form = form_for(conn, "/users", [as: :user], fn f ->
 end)
 ```
 
-And you can embed Phoenix helpers inside Taggart:
+### Using Phoenix Helpers
 
 ```
 use Taggart
@@ -146,4 +143,4 @@ simple.
 
 ## License
 
-Taggard is released under the Apache License, Version 2.0.
+Taggart is released under the Apache License, Version 2.0.

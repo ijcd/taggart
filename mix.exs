@@ -1,14 +1,33 @@
 defmodule Taggart.Mixfile do
   use Mix.Project
 
+  @version "0.1.0"
+  @source_url "https://github.com/ijcd/taggart"
+  @description "Tag-based markup in Elixir. Supports standard HTML tags as well as custom tag definitions."
+
   def project do
     [
       app: :taggart,
-      version: "0.1.0",
+      version: @version,
       elixir: "~> 1.5",
       elixirc_paths: elixirc_paths(Mix.env),
       start_permanent: Mix.env == :prod,
-      deps: deps()
+      deps: deps(),
+
+      # docs
+      description: @description,
+      name: "Taggart",
+      source_url: @source_url,
+      package: package(),
+      dialyzer: [flags: "--fullpath"],
+      docs: [
+        main: "readme",
+        source_ref: "v#{@version}",
+        source_url: @source_url,
+        extras: [
+          "README.md"
+        ]
+      ]
     ]
   end
 
@@ -27,13 +46,27 @@ defmodule Taggart.Mixfile do
     [
       {:phoenix_html, "~> 2.10"},
 
-      # test
+      # docs
+      {:ex_doc, "~> 0.16.4", only: :dev, runtime: false},
+      {:earmark, "~> 1.2", only: :dev, runtime: false},
+
+      # dev/test
       {:phoenix, "~> 1.3.0", only: [:dev, :test], runtime: false},
       {:mix_test_watch, "~> 0.3", only: [:dev, :test], runtime: false},
       {:credo, "~> 0.8.5", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
       {:stream_data, "~> 0.2.0", only: [:dev, :test], runtime: false},
       {:mex, "~> 0.0.5", only: [:dev, :test], runtime: false},
+    ]
+  end
+
+  defp package do
+    [
+      description: @description,
+      files: ["lib", "config", "mix.exs", "README*"],
+      maintainers: ["Ian Duggan"],
+      licenses: ["Apache 2.0"],
+      links: %{GitHub: @source_url}
     ]
   end
 end
