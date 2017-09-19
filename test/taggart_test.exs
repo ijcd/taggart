@@ -101,6 +101,28 @@ defmodule TaggartTest do
     assert "<div><span></span><div></div></div>" == (div do span do end ; div do end end) |> safe_to_string
   end
 
+  test "with nested calls with attrs" do
+    assert "<div class=\"foo\"><div class=\"bar\"></div></div>" == div(div(class: "bar"), class: "foo") |> safe_to_string
+    assert "<span class=\"foo\"><span class=\"bar\"></span></span>" == span(span(class: "bar"), class: "foo") |> safe_to_string
+  end
+
+  test "with nested do blocks with attrs" do
+    assert "<div class=\"foo\"><div class=\"bar\"></div></div>" == (div(class: "foo") do div(class: "bar") end) |> safe_to_string
+    assert "<span class=\"foo\"><span class=\"bar\"></span></span>" == (span(class: "foo") do span(class: "bar") end) |> safe_to_string
+  end
+
+  test "with more deeply nested do blocks with attrs" do
+    assert "<div class=\"foo\"><div class=\"bar\"><div class=\"baz\"></div></div></div>" == (div(class: "foo") do div(class: "bar") do div(class: "baz") do end end end) |> safe_to_string
+    assert "<span class=\"foo\"><span class=\"bar\"><span class=\"baz\"></span></span></span>" == (span(class: "foo") do span(class: "bar") do span(class: "baz") do end end end) |> safe_to_string
+    assert "<div class=\"foo\"><span class=\"bar\"><div class=\"baz\"><span class=\"bang\"></span></div></span></div>" == (div(class: "foo") do span(class: "bar") do div(class: "baz") do span(class: "bang") do end end end end) |> safe_to_string    
+  end
+
+  test "with siblings blocks with attrs" do
+    assert "<div class=\"foo\"><div class=\"bar\"></div><div class=\"baz\"></div></div>" == (div(class: "foo") do div(class: "bar") do end ; div(class: "baz") do end end) |> safe_to_string
+    assert "<span class=\"foo\"><span class=\"bar\"></span><span class=\"baz\"></span></span>" == (span(class: "foo") do span(class: "bar") do end ; span(class: "baz") do end end) |> safe_to_string
+    assert "<div class=\"foo\"><span class=\"bar\"></span><div class=\"baz\"></div></div>" == (div(class: "foo") do span(class: "bar") do end ; div(class: "baz") do end end) |> safe_to_string
+  end
+
   test "non-string content" do
     assert "<span>5</span>" == span(5) |> safe_to_string
     assert "<span>foo</span>" == span(:foo) |> safe_to_string
