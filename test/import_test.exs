@@ -43,7 +43,6 @@ defmodule TaggartUseHTMLTest do
   import Phoenix.HTML
 
   use Taggart.HTML
-  import Taggart
 
   test "div/2 should be avialable" do
     assert "<div class=\"foo\">content</div>" == div("content", class: "foo") |> safe_to_string

@@ -21,37 +21,30 @@ defmodule Taggart do
 
   @doc false
   defmacro __using__(opts) do
-    should_deconflict_imports = Keyword.get(opts, :deconflict_imports, true)
+    deconflict_imports = Keyword.get(opts, :deconflict_imports, true)
     tags = Keyword.get(opts, :tags, @tags)
-    ambiguous_imports = find_ambiguous_imports(tags)
+    exclude_imports =
+      if deconflict_imports do
+        find_ambiguous_imports(tags)
+      else
+        []
+      end
 
     import_ast =
-      if should_deconflict_imports do
-        quote do
-          defmacro __using__(opts) do
-            ambiguous_imports = unquote(ambiguous_imports)
-            module = __MODULE__
-            quote do
-              import Kernel, except: unquote(ambiguous_imports)
-              import unquote(module)
-            end
-          end
+      quote do
+        defmacro __using__(opts) do
+          module = __MODULE__
 
-          import Kernel, except: unquote(ambiguous_imports)
-          import Taggart, only: [taggart: 0, taggart: 1]
-        end
-      else
-        quote do
-          defmacro __using__(opts) do
-            module = __MODULE__
-            quote do
-              import unquote(module)
-              import Taggart, only: [taggart: 0, taggart: 1]
-            end
+          exclude_imports = unquote(exclude_imports)
+          quote do
+            import Kernel, except: unquote(exclude_imports)
+            import Taggart, only: [taggart: 0, taggart: 1]
+            import unquote(module)
           end
-
-          import Taggart, only: [taggart: 0, taggart: 1]
         end
+
+        import Kernel, except: unquote(exclude_imports)
+        import Taggart, only: [taggart: 0, taggart: 1]
       end
 
     tags_ast =
