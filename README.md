@@ -1,7 +1,7 @@
 # Taggart
 
 [![Hex.pm](https://img.shields.io/hexpm/v/taggart.svg)](https://hex.pm/packages/taggart)
-[![Build Docs](https://img.shields.io/badge/hexdocs-release-blue.svg)](https://hexdocs.pm/taggart/Taggart.html)
+[![Build Docs](https://img.shields.io/badge/hexdocs-release-blue.svg)](https://hexdocs.pm/taggart/index.html)
 [![Build Status](https://travis-ci.org/ijcd/taggart.svg?branch=master)](https://travis-ci.org/ijcd/taggart)
 
 Taggart is a generation library for tag-based markup (HTML, XML, SGML,
@@ -9,6 +9,8 @@ etc.). It is useful for times when you just want code and functions, not
 templates. We already have great composition and abstraction tools in
 Elixir. Why not use them? With this approach, template coposition through
 smaller component functions should be easy.
+
+[Documentation](http://hexdocs.pm/taggart/)
 
 ## Installation
 
