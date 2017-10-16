@@ -242,4 +242,34 @@ defmodule TaggartTest do
     assert String.contains?(h, "Age:")
     assert String.ends_with?(h, "<button type=\"submit\">Submit</button></form></div></body></html>")
   end
+
+  test "doctypes" do
+    assert "<!DOCTYPE html>" == html_doctype() |> safe_to_string
+    assert "<!DOCTYPE html>" == html_doctype(:html5) |> safe_to_string    
+    assert ~s|<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">| == html_doctype(:html401_strict) |> safe_to_string
+    assert ~s|<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">| == html_doctype(:html401_transitional) |> safe_to_string
+    assert ~s|<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">| == html_doctype(:html401_frameset) |> safe_to_string
+    assert ~s|<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">| == html_doctype(:xhtml10_strict) |> safe_to_string
+    assert ~s|<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">| == html_doctype(:xhtml10_transitional) |> safe_to_string
+    assert ~s|<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Frameset//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-frameset.dtd">| == html_doctype(:xhtml10_frameset) |> safe_to_string
+    assert ~s|<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">| == html_doctype(:xhtml11) |> safe_to_string
+  end
+
+  test "an html comment" do
+    assert "<!-- this is a string comment -->" == html_comment("this is a string comment") |> safe_to_string
+  end
+
+  test "an multiline html comment" do
+    comment = """
+this is
+a
+multiline
+comment
+"""
+    assert "<!-- this is\na\nmultiline\ncomment\n -->" == html_comment(comment) |> safe_to_string    
+  end
+
+  test "an html with escaping" do
+    assert "<!-- this is a -- > string comment -->" == html_comment("this is a --> string comment") |> safe_to_string
+  end
 end
