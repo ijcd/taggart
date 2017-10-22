@@ -189,7 +189,7 @@ end
 defmodule Main do
   import ExProf.Macro
 
-  def do_benchmark() do
+  def do_benchmark_each() do
     Benchee.run(
       %{
         lists_with_taggart: &TaggartMarkup.with_lists/0,
@@ -215,23 +215,50 @@ defmodule Main do
       })
   end
 
+  def do_benchmark_all() do
+    Benchee.run(
+      %{
+        taggart: fn ->
+          TaggartMarkup.with_lists()
+          TaggartMarkup.with_simple_lists()
+          TaggartMarkup.with_title_list()
+          TaggartMarkup.with_title_lists()
+        end,
+        eex: fn -> 
+          EexMarkup.with_lists()
+          EexMarkup.with_simple_lists()
+          EexMarkup.with_title_list()
+          EexMarkup.with_title_lists()
+        end
+      })
+  end
+  
   def run_taggart() do
     for i <- 1..1000 do
       TaggartMarkup.with_lists()
+      TaggartMarkup.with_simple_lists()
+      TaggartMarkup.with_title_list()
+      TaggartMarkup.with_title_lists()
     end
-    # simple_lists_with_taggart: &TaggartMarkup.with_simple_lists/0,
-    # title_list_with_taggart: &TaggartMarkup.with_title_list/0,
-    # title_lists_with_taggart: &TaggartMarkup.with_title_lists/0,
   end
 
-  def do_taggart_eprof() do
+  def run_eex() do
+    for i <- 1..1000 do
+      EexMarkup.with_lists()
+      EexMarkup.with_simple_lists()
+      EexMarkup.with_title_list()
+      EexMarkup.with_title_lists()
+    end
+  end
+  
+  def do_eprof(fun) do
     profile do
-      run_taggart()
+      fun.()
     end    
   end
 
-  def do_taggart_fprof() do
-    :fprof.apply(&run_taggart/0, [])
+  def do_fprof(fun) do
+    :fprof.apply(fun, [])
     :fprof.profile()
     :fprof.analyse([sort: :own,
                     totals: true,
@@ -241,10 +268,10 @@ defmodule Main do
     Mix.Shell.IO.cmd "mv fprof.trace perf/"
   end
 
-  def do_taggart_eflame() do
-    svg_file = "perf/flame.svg"
+  def do_eflame(fun, prefix \\ "") do
+    svg_file = "perf/#{prefix}flame.svg"
     
-    :eflame.apply(&run_taggart/0, [])
+    :eflame.apply(fun, [], %{timeout: 10000})
     Mix.Shell.IO.info "Generating SVG flamegraph..."
     Mix.Shell.IO.cmd "mkdir -p perf"
     Mix.Shell.IO.cmd "mv stacks.out perf/"
@@ -253,20 +280,36 @@ defmodule Main do
   end
 end
 
+
 case System.argv do
-  ["profile", "eprof"] ->
-    Main.do_taggart_eprof()
+  # profile taggart
+  ["profile", "taggart", "eprof"] ->
+    Main.do_eprof(&Main.run_taggart/0)
 
-  ["profile", "fprof"] ->
-    Main.do_taggart_fprof()
+  ["profile", "taggart", "fprof"] ->
+    Main.do_fprof(&Main.run_taggart/0)
 
-  ["profile", "eflame"] ->
-    Main.do_taggart_eflame()
+  ["profile", "taggart", "eflame"] ->
+    Main.do_eflame(&Main.run_taggart/0, "taggart_")
 
-  ["benchmark"] ->
-    Main.do_benchmark()
+  # profile eex
+  ["profile", "eex", "eprof"] ->
+    Main.do_eprof(&Main.run_eex/0)
 
+  ["profile", "eex", "fprof"] ->
+    Main.do_fprof(&Main.run_eex/0)
+
+  ["profile", "eex", "eflame"] ->
+    Main.do_eflame(&Main.run_eex/0, "eex_")
+
+  # benchmark
+  ["benchmark", "each"] ->
+    Main.do_benchmark_each()
+
+  ["benchmark", "all"] ->
+    Main.do_benchmark_all()
+    
   _ ->
-    IO.puts("Usage: mix run bench/run.ex <benchmark | profile eprof | profile fprof | profile eflame>")
+    IO.puts("Usage: mix run bench/run.ex <benchmark <each | all> | profile <taggart | eex> <eprof | fprof | eflame>>")
     :erlang.halt(1)
 end

@@ -4,7 +4,7 @@
   "deep_merge": {:hex, :deep_merge, "0.1.1", "c27866a7524a337b6a039eeb8dd4f17d458fd40fbbcb8c54661b71a22fffe846", [:mix], []},
   "dialyxir": {:hex, :dialyxir, "0.5.1", "b331b091720fd93e878137add264bac4f644e1ddae07a70bf7062c7862c4b952", [:mix], []},
   "earmark": {:hex, :earmark, "1.2.3", "206eb2e2ac1a794aa5256f3982de7a76bf4579ff91cb28d0e17ea2c9491e46a4", [:mix], []},
-  "eflame": {:hex, :eflame, "1.0.1", "0664d287e39eef3c413749254b3af5f4f8b00be71c1af67d325331c4890be0fc", [:mix], []},
+  "eflame": {:git, "https://github.com/ijcd/eflame.git", "fb1bd22a1c94ca2bafd8381815f21ae60659c40f", []},
   "ex_doc": {:hex, :ex_doc, "0.16.4", "4bf6b82d4f0a643b500366ed7134896e8cccdbab4d1a7a35524951b25b1ec9f0", [:mix], [{:earmark, "~> 1.1", [hex: :earmark, optional: false]}]},
   "exprintf": {:hex, :exprintf, "0.2.1", "b7e895dfb00520cfb7fc1671303b63b37dc3897c59be7cbf1ae62f766a8a0314", [:mix], []},
   "exprof": {:hex, :exprof, "0.2.1", "a89e9b3590b09a5388b834c68198c7f1b657b1c9f9fefe0b0f2a1c2191a3e4cc", [:mix], [{:exprintf, "~> 0.2", [hex: :exprintf, optional: false]}]},

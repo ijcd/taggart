@@ -54,8 +54,8 @@ defmodule Taggart.Mixfile do
       {:phoenix, "~> 1.3.0", only: [:dev, :test], runtime: false},
       {:benchee, "~> 0.9.0", only: [:dev, :test], runtime: false},
       {:exprof, "~> 0.2.1", only: [:dev, :test], runtime: false},
-      {:eflame, "~> 1.0"},
-
+      {:eflame, github: "ijcd/eflame", compile: "rebar compile"},
+      
       {:mix_test_watch, "~> 0.3", only: [:dev, :test], runtime: false},
       {:credo, "~> 0.8.5", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
