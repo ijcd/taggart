@@ -186,26 +186,87 @@ defmodule EexMarkup do
   end
 end
 
-Benchee.run(
-  %{
-    lists_with_taggart: &TaggartMarkup.with_lists/0,
-    lists_with_eex: &EexMarkup.with_lists/0,    
-  })
+defmodule Main do
+  import ExProf.Macro
 
-Benchee.run(
-  %{
-    simple_lists_with_taggart: &TaggartMarkup.with_simple_lists/0,
-    simple_lists_with_eex: &EexMarkup.with_simple_lists/0,    
-  })
+  def do_benchmark() do
+    Benchee.run(
+      %{
+        lists_with_taggart: &TaggartMarkup.with_lists/0,
+        lists_with_eex: &EexMarkup.with_lists/0,    
+      })
 
-Benchee.run(
-  %{
-    title_list_with_taggart: &TaggartMarkup.with_title_list/0,
-    title_list_with_eex: &EexMarkup.with_title_list/0,    
-  })
+    Benchee.run(
+      %{
+        simple_lists_with_taggart: &TaggartMarkup.with_simple_lists/0,
+        simple_lists_with_eex: &EexMarkup.with_simple_lists/0,    
+      })
 
-Benchee.run(
-  %{
-    title_lists_with_taggart: &TaggartMarkup.with_title_lists/0,
-    title_lists_with_eex: &EexMarkup.with_title_lists/0,    
-  })
+    Benchee.run(
+      %{
+        title_list_with_taggart: &TaggartMarkup.with_title_list/0,
+        title_list_with_eex: &EexMarkup.with_title_list/0,    
+      })
+
+    Benchee.run(
+      %{
+        title_lists_with_taggart: &TaggartMarkup.with_title_lists/0,
+        title_lists_with_eex: &EexMarkup.with_title_lists/0,    
+      })
+  end
+
+  def run_taggart() do
+    for i <- 1..1000 do
+      TaggartMarkup.with_lists()
+    end
+    # simple_lists_with_taggart: &TaggartMarkup.with_simple_lists/0,
+    # title_list_with_taggart: &TaggartMarkup.with_title_list/0,
+    # title_lists_with_taggart: &TaggartMarkup.with_title_lists/0,
+  end
+
+  def do_taggart_eprof() do
+    profile do
+      run_taggart()
+    end    
+  end
+
+  def do_taggart_fprof() do
+    :fprof.apply(&run_taggart/0, [])
+    :fprof.profile()
+    :fprof.analyse([sort: :own,
+                    totals: true,
+                    callers: true,
+                    details: true])
+    Mix.Shell.IO.cmd "mkdir -p perf"
+    Mix.Shell.IO.cmd "mv fprof.trace perf/"
+  end
+
+  def do_taggart_eflame() do
+    svg_file = "perf/flame.svg"
+    
+    :eflame.apply(&run_taggart/0, [])
+    Mix.Shell.IO.info "Generating SVG flamegraph..."
+    Mix.Shell.IO.cmd "mkdir -p perf"
+    Mix.Shell.IO.cmd "mv stacks.out perf/"
+    Mix.Shell.IO.cmd "sort perf/stacks.out | deps/eflame/stack_to_flame.sh > #{svg_file}"
+    Mix.Shell.IO.info svg_file
+  end
+end
+
+case System.argv do
+  ["profile", "eprof"] ->
+    Main.do_taggart_eprof()
+
+  ["profile", "fprof"] ->
+    Main.do_taggart_fprof()
+
+  ["profile", "eflame"] ->
+    Main.do_taggart_eflame()
+
+  ["benchmark"] ->
+    Main.do_benchmark()
+
+  _ ->
+    IO.puts("Usage: mix run bench/run.ex <benchmark | profile eprof | profile fprof | profile eflame>")
+    :erlang.halt(1)
+end

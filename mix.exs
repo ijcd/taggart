@@ -53,6 +53,8 @@ defmodule Taggart.Mixfile do
       # dev/test
       {:phoenix, "~> 1.3.0", only: [:dev, :test], runtime: false},
       {:benchee, "~> 0.9.0", only: [:dev, :test], runtime: false},
+      {:exprof, "~> 0.2.1", only: [:dev, :test], runtime: false},
+      {:eflame, "~> 1.0"},
 
       {:mix_test_watch, "~> 0.3", only: [:dev, :test], runtime: false},
       {:credo, "~> 0.8.5", only: [:dev, :test], runtime: false},
