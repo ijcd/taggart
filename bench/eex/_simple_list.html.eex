@@ -1,0 +1,5 @@
+<ul>
+  <%= for i <- assigns[:do] do %>
+    <li><%= i %></li>
+  <% end %>
+</ul>

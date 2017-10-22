@@ -1,0 +1,51 @@
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta "http-equiv"="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="result type benchmarking">
+    <meta name="author" content="zambal">
+  </head>
+  <body>
+    <h2>
+      <%= String.capitalize("lists") %>
+    </h2>
+    <%= render EexView, "_simple_list.html" do
+        [
+          "Strawberry",
+          "Banana",
+          "Apple",
+          "Orange",
+        ]
+        end
+    %>
+    <%= render EexView, "_simple_list.html" do
+        [
+          "C",
+          "Java",
+          "Erlang",
+          "Elixir",
+          "Javascript",
+        ]
+        end
+    %>
+    <%= render EexView, "_simple_list.html" do
+        [
+          "Netherlands",
+          "Germany",
+          "Denmark",
+          "Poland",
+        ]
+        end
+    %>
+    <%= render EexView, "_simple_list.html" do
+        [
+          "Mercury",
+          "Venus",
+          "Earth",
+          "Mars",
+        ]
+        end
+    %>
+  </body>
+</html>
