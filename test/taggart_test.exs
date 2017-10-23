@@ -4,7 +4,7 @@ defmodule TaggartTest do
   use Taggart.ConnCase
   use Taggart
 
-  doctest Taggart
+#   doctest Taggart
 
   test "simple html" do
     assert "<div></div>" == div() |> safe_to_string()
@@ -181,20 +181,20 @@ defmodule TaggartTest do
   end
 
   test "inside a phoenix form", %{conn: conn} do
-    import Phoenix.HTML
-    import Phoenix.HTML.Form
+    alias Phoenix.HTML
+    alias Phoenix.HTML.Form
 
-    form = form_for(conn, "/users", [as: :user], fn f ->
+    form = Form.form_for(conn, "/users", [as: :user], fn f ->
       taggart do
         label do
           "Name:"
-          text_input(f, :name)
+          Form.text_input(f, :name)
         end
         label do
           "Age:"
-          select(f, :age, 18..100)
+          Form.select(f, :age, 18..100)
         end
-        submit("Submit")
+        Form.submit("Submit")
       end
     end)
     |> safe_to_string
@@ -206,8 +206,8 @@ defmodule TaggartTest do
   end
 
   test "with an embedded phoenix form" do
-    import Phoenix.HTML
-    import Phoenix.HTML.Form
+    alias Phoenix.HTML
+    alias Phoenix.HTML.Form
 
     name = "Vincent"
 
@@ -218,17 +218,17 @@ defmodule TaggartTest do
             h3 "Person"
             p name, class: "name"
             p 2 * 19, class: "age"
-            form_for(build_conn(), "/users", [as: :user], fn f ->
+            Form.form_for(build_conn(), "/users", [as: :user], fn f ->
               taggart do
                 label do
                   "Name:"
-                  text_input(f, :name)
+                  Form.text_input(f, :name)
                 end
                 label do
                   "Age:"
-                  select(f, :age, 18..100)
+                  Form.select(f, :age, 18..100)
                 end
-                submit("Submit")
+                Form.submit("Submit")
               end
             end)
           end

@@ -31,23 +31,23 @@ defmodule Taggart.Tags do
         when is_list(attrs)
       do
         tag = unquote(tag)  # push tag down to next quote
-
         {content, attrs} = Keyword.pop(attrs, :do, "")
-        content =
-          case content do
-            {:__block__, _, inner} -> inner
-            _ -> content
-          end
 
         quote do
-          Tag.content_tag(unquote(tag), unquote(content), unquote(attrs))
+          unquote(tag)(unquote(attrs)) do
+            unquote(content)
+          end
         end
       end
 
       defmacro unquote(tag)(content) do
         tag = unquote(tag)  # push tag down to next quote
+        attrs = Macro.escape([])
+
         quote do
-          Tag.content_tag(unquote(tag), unquote(content), [])
+          unquote(tag)(unquote(attrs)) do
+            unquote(content)
+          end
         end
       end
 
@@ -75,12 +75,15 @@ defmodule Taggart.Tags do
         when not is_list(content)
       do
         tag = unquote(tag)
+
         quote do
-          Tag.content_tag(unquote(tag), unquote(content), unquote(attrs))
+          unquote(tag)(unquote(attrs)) do
+            unquote(content)
+          end
         end
       end
 
-      defmacro unquote(tag)(attrs, [do: content]) do
+      defmacro unquote(tag)(attrs, do: content) do
         tag = unquote(tag)
         content =
           case content do
@@ -95,8 +98,11 @@ defmodule Taggart.Tags do
 
       defmacro unquote(tag)(content, attrs) when is_list(attrs) do
         tag = unquote(tag)
+
         quote do
-          Tag.content_tag(unquote(tag), unquote(content), unquote(attrs))
+          unquote(tag)(unquote(attrs)) do
+            unquote(content)
+          end
         end
       end
     end
