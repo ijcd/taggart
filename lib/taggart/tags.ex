@@ -5,9 +5,6 @@ defmodule Taggart.Tags do
   Contains macros for creating a tag-based DSL.
   """
 
-  alias Phoenix.HTML.Tag
-
-
   @doc """
   Define a new tag.
 
@@ -33,22 +30,14 @@ defmodule Taggart.Tags do
         tag = unquote(tag)  # push tag down to next quote
         {content, attrs} = Keyword.pop(attrs, :do, "")
 
-        quote do
-          unquote(tag)(unquote(attrs)) do
-            unquote(content)
-          end
-        end
+        Taggart.Tags.normalized_call(tag, attrs, content)
       end
 
       defmacro unquote(tag)(content) do
         tag = unquote(tag)  # push tag down to next quote
         attrs = Macro.escape([])
 
-        quote do
-          unquote(tag)(unquote(attrs)) do
-            unquote(content)
-          end
-        end
+        Taggart.Tags.normalized_call(tag, attrs, content)
       end
 
       @doc """
@@ -76,11 +65,7 @@ defmodule Taggart.Tags do
       do
         tag = unquote(tag)
 
-        quote do
-          unquote(tag)(unquote(attrs)) do
-            unquote(content)
-          end
-        end
+        Taggart.Tags.normalized_call(tag, attrs, content)
       end
 
       defmacro unquote(tag)(attrs, do: content) do
@@ -92,18 +77,22 @@ defmodule Taggart.Tags do
           end
 
         quote do
-          Tag.content_tag(unquote(tag), unquote(content), unquote(attrs))
+          Phoenix.HTML.Tag.content_tag(unquote(tag), unquote(content), unquote(attrs))
         end
       end
 
       defmacro unquote(tag)(content, attrs) when is_list(attrs) do
         tag = unquote(tag)
 
-        quote do
-          unquote(tag)(unquote(attrs)) do
-            unquote(content)
-          end
-        end
+        Taggart.Tags.normalized_call(tag, attrs, content)
+      end
+    end
+  end
+
+  def normalized_call(tag, attrs, content) do
+    quote do
+      unquote(tag)(unquote(attrs)) do
+        unquote(content)
       end
     end
   end
