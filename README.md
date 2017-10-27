@@ -7,7 +7,7 @@
 Taggart is a generation library for tag-based markup (HTML, XML, SGML,
 etc.). It is useful for times when you just want code and functions, not
 templates. We already have great composition and abstraction tools in
-Elixir. Why not use them? With this approach, template coposition through
+Elixir. Why not use them? With this approach, template composition through
 smaller component functions should be easy.
 
 [Documentation](http://hexdocs.pm/taggart/)
