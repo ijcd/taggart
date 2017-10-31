@@ -4,7 +4,7 @@ defmodule TaggartTest do
   use Taggart.ConnCase
   use Taggart
 
-#   doctest Taggart
+  doctest Taggart
 
   test "simple html" do
     assert "<div></div>" == div() |> safe_to_string()
