@@ -118,8 +118,7 @@ defmodule Taggart.Tags do
     build_attrs(tag, t, nested_attrs(dasherize(k), v, acc))
   end
   def build_attrs(tag, [{k, true}|t], acc) do
-    k = dasherize(k)
-    build_attrs(tag, t, [{k, k}|acc])
+    build_attrs(tag, t, [{dasherize(k)}|acc])
   end
   def build_attrs(tag, [{_, false}|t], acc) do
     build_attrs(tag, t, acc)
@@ -136,8 +135,11 @@ defmodule Taggart.Tags do
 
   defp tag_attrs([]), do: []
   defp tag_attrs(attrs) do
-    for {k, v} <- attrs do
-      [?\s, k, ?=, ?", attr_escape(v), ?"]
+    for a <- attrs do
+      case a do
+        {k, v} -> [?\s, k, ?=, ?", attr_escape(v), ?"]
+        {k} -> [?\s, k]
+      end
     end
   end
 
