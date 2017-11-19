@@ -12,6 +12,9 @@ smaller component functions should be easy.
 
 [Documentation](http://hexdocs.pm/taggart/)
 
+There is a [blog post](https://medium.com/@ijcd/announcing-taggart-4e62b485e882)
+with and introduction and more documentation.
+
 ## Installation
 
 The package can be installed by adding `taggart` to your list of
@@ -129,6 +132,50 @@ html do
 end
 ```
 
+### Using from Phoenix Views
+
+Phoenix views are just functions, so it’s possible to use pattern
+matching directly in a view to render your pages.
+
+```
+defmodule TaggartDemo.PageView do
+  use TaggartDemoWeb, :view
+  use Taggart
+
+  def render("index.html", assigns) do
+    taggart do
+      render_header("My Fancy Title")
+      render_body
+      render_footer
+    end
+  end
+
+  def render_header(title) do
+    header do
+      h1 title
+    end
+  end
+  
+  def render_body do
+    main do
+      ul do
+        for i <- 1..3, do: list_item(x)
+      end
+    end
+  end
+  
+  def render_footer do
+    footer do
+      "So Long Folks!!!"
+    end
+  end
+
+  def list_item(x) do
+    "Name: "
+    li(x)
+  end
+end
+```
 
 ## Design
 
