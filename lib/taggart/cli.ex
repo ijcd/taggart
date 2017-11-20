@@ -38,10 +38,15 @@ defmodule Taggart.CLI do
 
   defp run(:help) do
     Bunt.puts [:steelblue, """
-    taggart [--indent <n|tabs>] [--help]
+    Reads HTML from stdin and writes Taggart to stdout.
 
-      --help    Show this message.
-      --indent  Either n (number of spaces to indent) or "tabs"
+    Usage:
+      taggart --indent <n|tabs>
+      taggart --help
+
+    Options:
+      -h --help  Show this message.
+      --indent   Either n (number of spaces to indent) or "tabs"
     """]
   end
 

@@ -1,7 +1,7 @@
 defmodule Taggart.Mixfile do
   use Mix.Project
 
-  @version "0.1.1"
+  @version "0.1.2"
   @source_url "https://github.com/ijcd/taggart"
   @description "Tag-based markup in Elixir. Supports standard HTML tags as well as custom tag definitions."
 
