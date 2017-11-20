@@ -23,7 +23,7 @@ dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:taggart, "~> 0.1.1"}
+    {:taggart, "~> 0.1.2"}
   ]
 end
 ```
@@ -155,7 +155,7 @@ defmodule TaggartDemo.PageView do
       h1 title
     end
   end
-  
+
   def render_body do
     main do
       ul do
@@ -163,7 +163,7 @@ defmodule TaggartDemo.PageView do
       end
     end
   end
-  
+
   def render_footer do
     footer do
       "So Long Folks!!!"
@@ -175,6 +175,37 @@ defmodule TaggartDemo.PageView do
     li(x)
   end
 end
+```
+
+## Converting from HTML
+
+### PrestoChange.io
+
+You can use the online tool at [prestochange.io](http://www.prestochange.io).
+
+### Install taggart escript using homebrew
+
+```
+brew install ijcd/tap/taggart
+```
+
+```
+Reads HTML from stdin and writes Taggart to stdout.
+
+Usage:
+  taggart --indent <n|tabs>
+  taggart --help
+
+Options:
+  -h --help  Show this message.
+  --indent   Either n (number of spaces to indent) or "tabs"
+```
+
+### Build taggart escript from source
+
+```
+mix escript.build
+./taggart
 ```
 
 ## Design

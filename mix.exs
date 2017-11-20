@@ -13,6 +13,7 @@ defmodule Taggart.Mixfile do
       elixirc_paths: elixirc_paths(Mix.env),
       start_permanent: Mix.env == :prod,
       deps: deps(),
+      escript: escript(),
 
       # docs
       description: @description,
@@ -50,12 +51,15 @@ defmodule Taggart.Mixfile do
       {:ex_doc, "~> 0.16.4", only: :dev, runtime: false},
       {:earmark, "~> 1.2", only: :dev, runtime: false},
 
+      # converters
+      {:floki, "~> 0.17.0"},
+
       # dev/test
       {:phoenix, "~> 1.3.0", only: [:dev, :test], runtime: false},
       {:benchee, "~> 0.9.0", only: [:dev, :test], runtime: false},
       {:exprof, "~> 0.2.1", only: [:dev, :test], runtime: false},
       {:eflame, github: "ijcd/eflame", compile: "rebar compile", only: [:dev, :test], runtime: false},
-      
+
       {:mix_test_watch, "~> 0.3", only: [:dev, :test], runtime: false},
       {:credo, "~> 0.8.5", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
@@ -71,6 +75,14 @@ defmodule Taggart.Mixfile do
       maintainers: ["Ian Duggan"],
       licenses: ["Apache 2.0"],
       links: %{GitHub: @source_url}
+    ]
+  end
+
+  defp escript do
+    [
+      main_module: Taggart.CLI,
+      embed_elixir: true,
+      # emu_args: "-noinput -ansi_enabled true"
     ]
   end
 end
