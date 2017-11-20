@@ -57,6 +57,9 @@ defmodule Taggart.Convert.HTMLToTaggart do
   end
 
   defp attr_doc({attr, value}) do
+    value = if attr == value, do: true, else: value
+    attr = escape_attr(attr)
+
     a = "#{attr}" |> String.to_atom |> Atom.to_string
     IA.glue(a, ": ", inspect(value))
   end
@@ -68,5 +71,13 @@ defmodule Taggart.Convert.HTMLToTaggart do
       String.replace_leading(s, " ", indent)
     end)
     |> Enum.join("\n")
+  end
+
+  defp escape_attr(attr) do
+    if String.contains?(attr, "-") do
+      "\"" <> attr <> "\""
+    else
+      attr
+    end
   end
 end

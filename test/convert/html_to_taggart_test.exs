@@ -29,7 +29,7 @@ html do
       a(href: "https://github.com/philss/floki") do
         "Github page"
       end
-      span(data-model: "user") do
+      span("data-model": "user") do
         "philss"
       end
     end
@@ -53,5 +53,12 @@ end
 
   test "converts html to taggart with tab indentation" do
     assert @taggart_tab == HTMLToTaggart.html_to_taggart(@html, "\t")
+  end
+
+  test "escapes attributes properly" do
+    input = ~s|<a href="#bottom" class="uk-button uk-button-default" uk-scroll escape-me="too">|
+    output = ~s|a(href: "#bottom", class: "uk-button uk-button-default", "uk-scroll": true, "escape-me": "too")|
+
+    assert output == HTMLToTaggart.html_to_taggart(input)
   end
 end

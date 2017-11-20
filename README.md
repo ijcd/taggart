@@ -56,6 +56,8 @@ div(class: "bold", do: "Name")
 div(class: "bold") do
   "Name"
 end
+
+a(href: "#bottom", class: "uk-button uk-button-default", "i-am-a-boolean": true), do: "Click me!"
 ```
 
 ### Nesting
