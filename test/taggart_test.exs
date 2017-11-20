@@ -181,7 +181,6 @@ defmodule TaggartTest do
   end
 
   test "inside a phoenix form", %{conn: conn} do
-    alias Phoenix.HTML
     alias Phoenix.HTML.Form
 
     form = Form.form_for(conn, "/users", [as: :user], fn f ->
@@ -206,7 +205,6 @@ defmodule TaggartTest do
   end
 
   test "with an embedded phoenix form" do
-    alias Phoenix.HTML
     alias Phoenix.HTML.Form
 
     name = "Vincent"
@@ -245,7 +243,7 @@ defmodule TaggartTest do
 
   test "doctypes" do
     assert "<!DOCTYPE html>" == html_doctype() |> safe_to_string
-    assert "<!DOCTYPE html>" == html_doctype(:html5) |> safe_to_string    
+    assert "<!DOCTYPE html>" == html_doctype(:html5) |> safe_to_string
     assert ~s|<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01//EN" "http://www.w3.org/TR/html4/strict.dtd">| == html_doctype(:html401_strict) |> safe_to_string
     assert ~s|<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">| == html_doctype(:html401_transitional) |> safe_to_string
     assert ~s|<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Frameset//EN" "http://www.w3.org/TR/html4/frameset.dtd">| == html_doctype(:html401_frameset) |> safe_to_string
@@ -266,7 +264,7 @@ a
 multiline
 comment
 """
-    assert "<!-- this is\na\nmultiline\ncomment\n -->" == html_comment(comment) |> safe_to_string    
+    assert "<!-- this is\na\nmultiline\ncomment\n -->" == html_comment(comment) |> safe_to_string
   end
 
   test "an html with escaping" do
