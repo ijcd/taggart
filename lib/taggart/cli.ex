@@ -48,15 +48,15 @@ defmodule Taggart.CLI do
   defp run({:start, flags}) do
     indent =
       case Keyword.get(flags, :indent) do
-	"tabs" ->
-	  "\t"
-	n ->
-	  try do
-	    n = String.to_integer(n)
-	    String.duplicate(" ", n)
-	  rescue
-	    ArgumentError -> raise "n must be an integer or \"tabs\" (see taggart --help)"
-	  end
+	      "tabs" ->
+	        "\t"
+	      n ->
+	        try do
+	          n = String.to_integer(n)
+	          String.duplicate(" ", n)
+	        rescue
+	          ArgumentError -> raise "n must be an integer or \"tabs\" (see taggart --help)"
+	        end
       end
 
     IO.read(:all)

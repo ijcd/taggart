@@ -1,4 +1,4 @@
-defmodule TaggartTest do
+defmodule TagsTest do
   import Phoenix.HTML
 
   use Taggart.ConnCase
@@ -6,14 +6,37 @@ defmodule TaggartTest do
 
   doctest Taggart
 
+  test "simple html (void tags)" do
+    assert "<area>" == area() |> safe_to_string()
+    assert "<base>" == base() |> safe_to_string()
+    assert "<br>" == br() |> safe_to_string()
+    assert "<col>" == col() |> safe_to_string()
+    assert "<command>" == command() |> safe_to_string()
+    assert "<embed>" == embed() |> safe_to_string()
+    assert "<hr>" == hr() |> safe_to_string()
+    assert "<img>" == img() |> safe_to_string()
+    assert "<input>" == input() |> safe_to_string()
+    assert "<keygen>" == keygen() |> safe_to_string()
+    assert "<link>" == link() |> safe_to_string()
+    assert "<menuitem>" == menuitem() |> safe_to_string()
+    assert "<meta>" == meta() |> safe_to_string()
+    assert "<param>" == param() |> safe_to_string()
+    assert "<source>" == source() |> safe_to_string()
+    assert "<track>" == track() |> safe_to_string()
+    assert "<wbr>" == wbr() |> safe_to_string()
+  end
+
+  test "with attributes (void tags)" do
+    assert "<img class=\"attr\">" == img(class: "attr") |> safe_to_string
+    assert "<embed class=\"attr\">" == embed(class: "attr") |> safe_to_string
+
+    assert "<img class=\"attr\" id=\"bar\">" == img(class: "attr", id: "bar") |> safe_to_string
+    assert "<embed class=\"attr\" id=\"bar\">" == embed(class: "attr", id: "bar") |> safe_to_string
+  end
+
   test "simple html" do
     assert "<div></div>" == div() |> safe_to_string()
     assert "<span></span>" == span() |> safe_to_string()
-  end
-
-  test "with content" do
-    assert "<div>content</div>" == div("content") |> safe_to_string
-    assert "<span>content</span>" == span("content") |> safe_to_string
   end
 
   test "with attributes" do
@@ -22,6 +45,11 @@ defmodule TaggartTest do
 
     assert "<div class=\"attr\" id=\"bar\"></div>" == div(class: "attr", id: "bar") |> safe_to_string
     assert "<span class=\"attr\" id=\"bar\"></span>" == span(class: "attr", id: "bar") |> safe_to_string
+  end
+
+  test "with content" do
+    assert "<div>content</div>" == div("content") |> safe_to_string
+    assert "<span>content</span>" == span("content") |> safe_to_string
   end
 
   test "with content as an arg, and attrs" do
@@ -178,67 +206,6 @@ defmodule TaggartTest do
       |> safe_to_string
 
     assert "<html><label>1</label><label>2</label><label>3</label><label>4</label></html>" = h
-  end
-
-  test "inside a phoenix form", %{conn: conn} do
-    alias Phoenix.HTML.Form
-
-    form = Form.form_for(conn, "/users", [as: :user], fn f ->
-      taggart do
-        label do
-          "Name:"
-          Form.text_input(f, :name)
-        end
-        label do
-          "Age:"
-          Form.select(f, :age, 18..100)
-        end
-        Form.submit("Submit")
-      end
-    end)
-    |> safe_to_string
-
-    assert "<form accept-charset=\"UTF-8\" action=\"/users\" method=\"post\"><input name=\"_csrf_token\" type=\"hidden\"" <> _ = form
-    assert String.contains?(form, "Name:")
-    assert String.contains?(form, "Age:")
-    assert String.ends_with?(form, "<button type=\"submit\">Submit</button></form>")
-  end
-
-  test "with an embedded phoenix form" do
-    alias Phoenix.HTML.Form
-
-    name = "Vincent"
-
-    h =
-      html do
-        body do
-          div do
-            h3 "Person"
-            p name, class: "name"
-            p 2 * 19, class: "age"
-            Form.form_for(build_conn(), "/users", [as: :user], fn f ->
-              taggart do
-                label do
-                  "Name:"
-                  Form.text_input(f, :name)
-                end
-                label do
-                  "Age:"
-                  Form.select(f, :age, 18..100)
-                end
-                Form.submit("Submit")
-              end
-            end)
-          end
-        end
-      end
-      |> safe_to_string
-
-    assert "<html><body><div><h3>Person</h3><p class=\"name\">Vincent</p><p class=\"age\">38</p><form accept-charset=\"UTF-8\" action=\"/users\" method=\"post\">" <> _ = h
-    assert String.contains?(h, "<p class=\"name\">Vincent</p>")
-    assert String.contains?(h, "Name:")
-    assert String.contains?(h, "Age:")
-    assert String.ends_with?(h, "<button type=\"submit\">Submit</button></form></div></body></html>")
   end
 
   test "doctypes" do

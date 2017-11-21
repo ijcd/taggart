@@ -35,17 +35,20 @@ defmodule Taggart do
 
   """
 
-  import Taggart.Tags, only: [deftag: 1]
+  import Taggart.Tags, only: [deftag: 1, deftag: 2]
 
   @external_resource tags_path = Path.join([__DIR__, "tags.txt"])
+  @external_resource void_tags_path = Path.join([__DIR__, "tags_void.txt"])
 
-  @tags (for line <- File.stream!(tags_path, [], :line) do
-    line |> String.trim |> String.to_atom
-  end)
+  @tags (for line <- File.stream!(tags_path, [], :line), do: line |> String.trim |> String.to_atom)
+  @void_tags (for line <- File.stream!(void_tags_path, [], :line), do: line |> String.trim |> String.to_atom)
 
   defmacro __using__(opts) do
     deconflict_imports = Keyword.get(opts, :deconflict_imports, true)
+
     tags = Keyword.get(opts, :tags, @tags)
+    void_tags = Keyword.get(opts, :void_tags, @void_tags)
+
     exclude_imports =
       if deconflict_imports do
         find_ambiguous_imports(tags)
@@ -80,10 +83,14 @@ defmodule Taggart do
 
     tags_ast =
       quote location: :keep, bind_quoted: [
-        tags: tags
+        tags: tags,
+        void_tags: void_tags
       ] do
         for tag <- tags do
-          deftag unquote(tag)
+          deftag(unquote(tag))
+        end
+        for tag <- void_tags do
+          deftag(unquote(tag), void: true)
         end
       end
 
@@ -158,7 +165,7 @@ defmodule Taggart do
   end
 
   @doc """
-  Produces a doctype tag. 
+  Produces a doctype tag.
 
   Defaults to html5. Available doctypes are:
 
@@ -196,7 +203,7 @@ defmodule Taggart do
         :xhtml11 -> {:safe, ~s|<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">|}
       end
     end
-  end       
+  end
 
   @doc """
   Produces an html comment.

@@ -59,6 +59,7 @@ defmodule Taggart.Tags do
 
           iex> #{tag}() do "content" end |> Phoenix.HTML.safe_to_string()
           "<#{tag}>content</#{tag}>"
+
       """
       defmacro unquote(tag)(content, attrs)
         when not is_list(content)
@@ -85,6 +86,42 @@ defmodule Taggart.Tags do
         tag = unquote(tag)
 
         Taggart.Tags.normalized_call(tag, attrs, content)
+      end
+    end
+  end
+
+  @doc """
+  Define a new void tag.
+
+  ```
+  deftag :hr, void: true
+  deftag :img, void: true
+
+  hr()
+  img(class: "red")
+  ```
+  """
+  defmacro deftag(tag, void: true) do
+    quote location: :keep, bind_quoted: [
+      tag: Macro.escape(tag, unquote: true)
+    ] do
+      @doc """
+      Produce a void "#{tag}" tag.
+
+      ## Examples
+
+          iex> #{tag}() |> Phoenix.HTML.safe_to_string()
+          "<#{tag}>"
+
+          iex> #{tag}(class: "foo") |> Phoenix.HTML.safe_to_string()
+          "<#{tag} class=\\"foo\\">"
+      """
+      defmacro unquote(tag)(attrs \\ []) do
+        tag = unquote(tag)
+
+        quote do
+          Phoenix.HTML.Tag.tag(unquote(tag), unquote(attrs))
+        end
       end
     end
   end

@@ -3,7 +3,7 @@ defmodule MacroExpansionTest do
   use Taggart
 
   test "basic ast" do
-    expanded = 
+    expanded =
       quote do
         div(class: "foo", id: "bar") do
           "content"
@@ -14,7 +14,7 @@ defmodule MacroExpansionTest do
   end
 
   test "desugar div/1 (content)" do
-    expanded = 
+    expanded =
       quote do
         div("content")
       end
@@ -24,7 +24,7 @@ defmodule MacroExpansionTest do
   end
 
   test "desugar div/1 tag(do: content)" do
-    expanded = 
+    expanded =
       quote do
         div do
           "content"
@@ -36,7 +36,7 @@ defmodule MacroExpansionTest do
   end
 
   test "desugar div/2, (content, attrs)" do
-    expanded = 
+    expanded =
       quote do
         div("content", do: "do_arg", id: "bar")
       end
@@ -46,7 +46,7 @@ defmodule MacroExpansionTest do
   end
 
   test "desugar div/2, (content, do_arg)" do
-    expanded = 
+    expanded =
       quote do
         div("content", do: "do_arg")
       end

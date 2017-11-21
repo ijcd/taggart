@@ -61,4 +61,17 @@ end
 
     assert output == HTMLToTaggart.html_to_taggart(input)
   end
+
+  test "handles void tags properly" do
+    input = ~s|<img>|
+    output = ~s|img|
+    assert output == HTMLToTaggart.html_to_taggart(input)
+  end
+
+  test "escapes void tags properly" do
+    input = ~s|<img uk-scroll escape-me="too">|
+    output = ~s|img("uk-scroll": true, "escape-me": "too")|
+
+    assert output == HTMLToTaggart.html_to_taggart(input)
+  end
 end
