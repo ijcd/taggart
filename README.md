@@ -13,7 +13,7 @@ smaller component functions should be easy.
 [Documentation](http://hexdocs.pm/taggart/)
 
 There is a [blog post](https://medium.com/@ijcd/announcing-taggart-4e62b485e882)
-with and introduction and more documentation.
+with an introduction and more documentation.
 
 ## Installation
 
