@@ -30,7 +30,7 @@ defmodule Taggart do
   If you would like to carefully control the imports:
   ```
   import Kernel, except: [div: 2]
-  use Taggart, deconflict_imports: false
+  use Taggart, deconflict_imports: false, except: [section: 2]
   ```
 
   """
@@ -60,8 +60,16 @@ defmodule Taggart do
       quote location: :keep do
         defmacro __using__(opts) do
           module = __MODULE__
+	  taggart_excepts = Keyword.get(opts, :except, [])
+	  deconflict_imports = Keyword.get(opts, :deconflict_imports, true)
 
-          exclude_imports = unquote(exclude_imports)
+	  exclude_imports =
+	    if deconflict_imports do
+	      unquote(exclude_imports)
+	    else
+	      []
+	    end
+
           quote location: :keep do
             import Kernel, except: unquote(exclude_imports)
             import Taggart, only: [
@@ -69,7 +77,7 @@ defmodule Taggart do
               html_doctype: 0, html_doctype: 1,
               html_comment: 1
             ]
-            import unquote(module)
+	    import unquote(module), except: unquote(taggart_excepts)
           end
         end
 

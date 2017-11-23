@@ -57,6 +57,25 @@ defmodule TaggartUseHTMLTest do
   end
 end
 
+defmodule TaggartUseHTMLExceptTest do
+  use ExUnit.Case
+  import Phoenix.HTML
+
+  use Taggart.HTML, deconflict_imports: false, except: [div: 2]
+
+  test "Kernel.div/2 should be avialable" do
+    assert 3 == div(10, 3)
+  end
+
+  test "taggart/0 should be avialable" do
+    assert "" == (taggart()) |> safe_to_string
+  end
+
+  test "taggart/1 should be avialable" do
+    assert "<section></section>" == (taggart do section() end) |> safe_to_string
+  end
+end
+
 defmodule TaggartUseTaggartNoDeconflictTest do
   use ExUnit.Case
   import Phoenix.HTML
