@@ -16,7 +16,7 @@ defmodule Taggart.ConnCase do
   use ExUnit.CaseTemplate
 
   using do
-    quote do
+    quote location: :keep do
       use Phoenix.ConnTest
     end
   end

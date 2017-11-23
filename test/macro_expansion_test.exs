@@ -1,10 +1,10 @@
 defmodule MacroExpansionTest do
   use Taggart.ConnCase
-  use Taggart
+  use Taggart.HTML
 
   test "basic ast" do
     expanded =
-      quote do
+      quote location: :keep do
         div(class: "foo", id: "bar") do
           "content"
         end
@@ -15,7 +15,7 @@ defmodule MacroExpansionTest do
 
   test "desugar div/1 (content)" do
     expanded =
-      quote do
+      quote location: :keep do
         div("content")
       end
       |> Macro.expand_once(__ENV__)
@@ -25,7 +25,7 @@ defmodule MacroExpansionTest do
 
   test "desugar div/1 tag(do: content)" do
     expanded =
-      quote do
+      quote location: :keep do
         div do
           "content"
         end
@@ -37,7 +37,7 @@ defmodule MacroExpansionTest do
 
   test "desugar div/2, (content, attrs)" do
     expanded =
-      quote do
+      quote location: :keep do
         div("content", do: "do_arg", id: "bar")
       end
       |> Macro.expand_once(__ENV__)
@@ -47,7 +47,7 @@ defmodule MacroExpansionTest do
 
   test "desugar div/2, (content, do_arg)" do
     expanded =
-      quote do
+      quote location: :keep do
         div("content", do: "do_arg")
       end
       |> Macro.expand_once(__ENV__)

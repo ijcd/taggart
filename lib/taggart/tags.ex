@@ -1,4 +1,69 @@
 defmodule Taggart.Tags do
+
+  @doc "See `taggart/1`"
+  defmacro taggart() do
+    quote location: :keep do
+      {:safe, ""}
+    end
+  end
+
+  @doc """
+  Allows grouping tags in a block.
+
+  Groups tags such that they all become part of the result. Normally,
+  with an Elixir block, only the last expression is part of the value.
+  This is useful, for example, as the do block of
+  `Phoenix.HTML.Form.form_for/4`.
+
+  ```
+  form_for(conn, "/users", [as: :user], fn f ->
+    taggart do
+      label do
+        "Name:"
+        text_input(f, :name)
+      end
+      label do
+        "Age:"
+        select(f, :age, 18..100)
+      end
+    end
+  end
+  ```
+
+  ## Examples
+
+      iex> taggart() |> Phoenix.HTML.safe_to_string()
+      ""
+
+      iex> (taggart do div() ; span() end) |> Phoenix.HTML.safe_to_string()
+      "<div></div><span></span>"
+
+  """
+  defmacro taggart(do: content) do
+    content = case content do
+      {:__block__, _, inner} -> inner
+      _ -> content
+    end
+
+    quote location: :keep, generated: true do
+      content = unquote(content)
+      case content do
+        # monadically combine array of [{:safe, content}, ...] -> {:safe, [content, ...]}
+        clist when is_list(clist) ->
+          inners =
+            for c <- clist do
+              {:safe, inner} = c
+              inner
+            end
+          {:safe, [inners]}
+
+        {:safe, _} = c -> c
+
+        c -> Phoenix.HTML.html_escape(c)
+      end
+    end
+  end
+
   @moduledoc """
   Define HTML tags.
 
@@ -117,7 +182,7 @@ defmodule Taggart.Tags do
       defmacro unquote(tag)(attrs \\ []) do
         tag = unquote(tag)
 
-        quote do
+        quote location: :keep do
           Phoenix.HTML.Tag.tag(unquote(tag), unquote(attrs))
         end
       end
@@ -125,7 +190,7 @@ defmodule Taggart.Tags do
   end
 
   def normalized_call(tag, attrs, content) do
-    quote do
+    quote location: :keep do
       unquote(tag)(unquote(attrs)) do
         unquote(content)
       end
@@ -133,7 +198,7 @@ defmodule Taggart.Tags do
   end
 
   def content_tag(tag, attrs, content) do
-    quote do
+    quote location: :keep do
       content = unquote(content)
       {:safe, escaped} = Phoenix.HTML.html_escape(content)
 

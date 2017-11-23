@@ -40,7 +40,7 @@ other library that uses the same format.
 Taggart supports a number of different syntaxes:
 
 ```
-use Taggart
+use Taggart.HTML
 
 div("Name")
 
@@ -65,7 +65,7 @@ a(href: "#bottom", class: "uk-button uk-button-default", "i-am-a-boolean": true)
 You can nest and combine in expected ways:
 
 ```
-use Taggart
+use Taggart.HTML
 
 name = "Susan"
 age = 27
@@ -90,7 +90,7 @@ You can embed Taggart inside Phoenix helpers using `Taggart.taggart/1`
 to create IO List without creating a top-level wrapping tag.
 
 ```
-use Taggart
+use Taggart.HTML
 
 form = form_for(conn, "/users", [as: :user], fn f ->
   taggart do
@@ -108,7 +108,7 @@ end)
 ### Using Phoenix Helpers
 
 ```
-use Taggart
+use Taggart.HTML
 
 html do
   body do
@@ -142,7 +142,7 @@ matching directly in a view to render your pages.
 ```
 defmodule TaggartDemo.PageView do
   use TaggartDemoWeb, :view
-  use Taggart
+  use Taggart.HTML
 
   def render("index.html", assigns) do
     taggart do

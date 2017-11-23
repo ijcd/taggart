@@ -2,7 +2,7 @@ defmodule PhoenixInteropTest do
   import Phoenix.HTML
 
   use Taggart.ConnCase
-  use Taggart
+  use Taggart.HTML
 
   test "inside a phoenix form", %{conn: conn} do
     alias Phoenix.HTML.Form
