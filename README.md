@@ -179,6 +179,57 @@ defmodule TaggartDemo.PageView do
 end
 ```
 
+## A Note On Macro Expansion
+
+THe current design allows for a very flexible call structure. However, do
+not be tempted to think of these as normal functions. They are currently
+implemented as macros. This allows the `do end` blocks to processed as
+if they were a list:
+
+```
+div do
+  "item 1"
+  "item 2"
+end
+```
+
+The alternative would be forcing the use of actual lists, which is necessairly noisier.
+
+```
+# Not valid, do not try:
+div [
+  "Item 1",
+  "Item 2"
+]
+```
+
+The trade-off, however, is that because the macros inspect the arguements
+to determine `attr/content` placement, they do not play well with all kinds
+of ASTs.
+
+This will work:
+
+```
+# works
+a = "foo"
+div(a)
+```
+
+This will not:
+```
+# do not try this at home
+a = [id: "foo", class: "bar"]
+div(a)
+```
+
+If you try this, you will get an error along the lines of
+`lists in Phoenix.HTML and templates may only contain integers 
+representing bytes, binaries or other list`. This is because we
+make the choice of assuming that a single, non-list argument
+(of which AST is) is content and not attrs. If you need to 
+programmatically pass attrs, please use `Phoenix.HTML.content_tag`
+directly.
+
 ## Converting from HTML
 
 ### PrestoChange.io

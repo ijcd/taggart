@@ -134,6 +134,7 @@ defmodule Taggart.Tags do
         Taggart.Tags.normalized_call(tag, attrs, content)
       end
 
+      # Main method
       defmacro unquote(tag)(attrs, do: content) do
         tag = unquote(tag)
         content =
@@ -142,9 +143,10 @@ defmodule Taggart.Tags do
             _ -> content
           end
 
-	Taggart.Tags.content_tag(tag, attrs, content)
+        Taggart.Tags.content_tag(tag, attrs, content)
       end
 
+      # Keep below the main method above, otherwise macro expansion loops forever
       defmacro unquote(tag)(content, attrs) when is_list(attrs) do
         tag = unquote(tag)
 
