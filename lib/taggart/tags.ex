@@ -125,6 +125,9 @@ defmodule Taggart.Tags do
           iex> #{tag}() do "content" end |> Phoenix.HTML.safe_to_string()
           "<#{tag}>content</#{tag}>"
 
+	  iex> #{tag}(nil, class: "foo") do "content" end |> Phoenix.HTML.safe_to_string()
+	  "<#{tag} class=\\"foo\\">content</#{tag}>"
+
       """
       defmacro unquote(tag)(content, attrs)
         when not is_list(content)
@@ -151,6 +154,18 @@ defmodule Taggart.Tags do
         tag = unquote(tag)
 
         Taggart.Tags.normalized_call(tag, attrs, content)
+      end
+
+      # div/3
+      defmacro unquote(tag)(_ignored, attrs, do: content) do
+	tag = unquote(tag)
+	content =
+	  case content do
+	    {:__block__, _, inner} -> inner
+	    _ -> content
+	  end
+
+	Taggart.Tags.content_tag(tag, attrs, content)
       end
     end
   end

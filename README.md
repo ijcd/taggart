@@ -226,9 +226,17 @@ If you try this, you will get an error along the lines of
 `lists in Phoenix.HTML and templates may only contain integers 
 representing bytes, binaries or other list`. This is because we
 make the choice of assuming that a single, non-list argument
-(of which AST is) is content and not attrs. If you need to 
-programmatically pass attrs, please use `Phoenix.HTML.content_tag`
-directly.
+(of which AST is) is content and not attrs.
+
+As a workaround, you can either use `Phoenix.HTML.content_tag`
+directly, or use the special three-argument version which
+ignores the first argument:
+
+```
+# try this
+a = [id: "foo", class: "bar"]
+div(nil, a) do "content" end
+```
 
 ## Converting from HTML
 
