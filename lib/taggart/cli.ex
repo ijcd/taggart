@@ -25,7 +25,7 @@ defmodule Taggart.CLI do
   end
 
   defp parse_args(args) do
-    {flags, _args, _other} = OptionParser.parse(args, switches: [indent: :string, indent: :string, help: :boolean], aliases: [h: :help])
+    {flags, _args, _other} = OptionParser.parse(args, switches: [indent: :string, help: :boolean], aliases: [h: :help])
 
     # set defaults
     flags = Keyword.put_new(flags, :indent, "2")
