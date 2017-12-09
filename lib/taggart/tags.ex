@@ -158,14 +158,14 @@ defmodule Taggart.Tags do
 
       # div/3
       defmacro unquote(tag)(_ignored, attrs, do: content) do
-	tag = unquote(tag)
-	content =
-	  case content do
-	    {:__block__, _, inner} -> inner
-	    _ -> content
-	  end
+      	tag = unquote(tag)
+      	content =
+      	  case content do
+      	    {:__block__, _, inner} -> inner
+      	    _ -> content
+      	  end
 
-	Taggart.Tags.content_tag(tag, attrs, content)
+      	Taggart.Tags.content_tag(tag, attrs, content)
       end
     end
   end
