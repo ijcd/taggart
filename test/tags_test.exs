@@ -178,6 +178,28 @@ defmodule TagsTest do
     assert "<div></div><span></span>" == (taggart do div() ; span() end) |> safe_to_string
   end
 
+  test "taggart with nested loop (regression)" do
+    assert "<div>1</div><span>2</span><span>3</span>" == (
+      taggart do
+        div(1)
+        for x <- 2..3, do: span(x)
+      end
+    ) |> safe_to_string
+
+    assert "<div>1</div><div><span>2 5</span><span>2 6</span></div><div><span>3 5</span><span>3 6</span></div>" == (
+      taggart do
+        div(1)
+        for x <- 2..3 do
+          div do
+            for y <- 5..6 do
+              span("#{x} #{y}")
+            end
+          end
+        end
+      end
+    ) |> safe_to_string
+  end
+
   test "normal html" do
     name = "Vincent"
 

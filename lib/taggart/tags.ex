@@ -51,7 +51,7 @@ defmodule Taggart.Tags do
         # monadically combine array of [{:safe, content}, ...] -> {:safe, [content, ...]}
         clist when is_list(clist) ->
           inners =
-            for c <- clist do
+            for c <- List.flatten(clist) do
               {:safe, inner} = c
               inner
             end
