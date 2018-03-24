@@ -181,7 +181,7 @@ end
 
 ## A Note On Macro Expansion
 
-THe current design allows for a very flexible call structure. However, do
+The current design allows for a very flexible call structure. However, do
 not be tempted to think of these as normal functions. They are currently
 implemented as macros. This allows the `do end` blocks to processed as
 if they were a list:
