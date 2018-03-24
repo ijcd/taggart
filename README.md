@@ -23,7 +23,7 @@ dependencies in `mix.exs`:
 ```elixir
 def deps do
   [
-    {:taggart, "~> 0.1.2"}
+    {:taggart, "~> 0.1.3"}
   ]
 end
 ```

@@ -1,7 +1,7 @@
 defmodule Taggart.Mixfile do
   use Mix.Project
 
-  @version "0.1.2"
+  @version "0.1.3"
   @source_url "https://github.com/ijcd/taggart"
   @description "Tag-based markup in Elixir. Supports standard HTML tags as well as custom tag definitions."
 
@@ -10,8 +10,8 @@ defmodule Taggart.Mixfile do
       app: :taggart,
       version: @version,
       elixir: "~> 1.5",
-      elixirc_paths: elixirc_paths(Mix.env),
-      start_permanent: Mix.env == :prod,
+      elixirc_paths: elixirc_paths(Mix.env()),
+      start_permanent: Mix.env() == :prod,
       deps: deps(),
       escript: escript(),
 
@@ -58,13 +58,13 @@ defmodule Taggart.Mixfile do
       {:phoenix, "~> 1.3.0", only: [:dev, :test], runtime: false},
       {:benchee, "~> 0.9.0", only: [:dev, :test], runtime: false},
       {:exprof, "~> 0.2.1", only: [:dev, :test], runtime: false},
-      {:eflame, github: "ijcd/eflame", compile: "rebar compile", only: [:dev, :test], runtime: false},
-
+      {:eflame,
+       github: "ijcd/eflame", compile: "rebar compile", only: [:dev, :test], runtime: false},
       {:mix_test_watch, "~> 0.3", only: [:dev, :test], runtime: false},
       {:credo, "~> 0.8.5", only: [:dev, :test], runtime: false},
       {:dialyxir, "~> 0.5", only: [:dev, :test], runtime: false},
       {:stream_data, "~> 0.2.0", only: [:dev, :test], runtime: false},
-      {:mex, "~> 0.0.5", only: [:dev, :test], runtime: false},
+      {:mex, "~> 0.0.5", only: [:dev, :test], runtime: false}
     ]
   end
 
@@ -81,7 +81,7 @@ defmodule Taggart.Mixfile do
   defp escript do
     [
       main_module: Taggart.CLI,
-      embed_elixir: true,
+      embed_elixir: true
       # emu_args: "-noinput -ansi_enabled true"
     ]
   end
