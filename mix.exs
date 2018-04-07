@@ -1,7 +1,7 @@
 defmodule Taggart.Mixfile do
   use Mix.Project
 
-  @version "0.1.3"
+  @version "0.1.4"
   @source_url "https://github.com/ijcd/taggart"
   @description "Tag-based markup in Elixir. Supports standard HTML tags as well as custom tag definitions."
 
@@ -52,10 +52,10 @@ defmodule Taggart.Mixfile do
       {:earmark, "~> 1.2", only: :dev, runtime: false},
 
       # converters
-      {:floki, "~> 0.17.0"},
+      {:floki, "~> 0.17"},
 
       # dev/test
-      {:phoenix, "~> 1.3.0", only: [:dev, :test], runtime: false},
+      {:phoenix, "~> 1.3", only: [:dev, :test], runtime: false},
       {:benchee, "~> 0.9.0", only: [:dev, :test], runtime: false},
       {:exprof, "~> 0.2.1", only: [:dev, :test], runtime: false},
       {:eflame,
