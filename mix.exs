@@ -52,7 +52,7 @@ defmodule Taggart.Mixfile do
       {:earmark, "~> 1.2", only: :dev, runtime: false},
 
       # converters
-      {:floki, "~> 0.17"},
+      {:floki, "~> 0.17", optional: true},
 
       # dev/test
       {:phoenix, "~> 1.3", only: [:dev, :test], runtime: false},
